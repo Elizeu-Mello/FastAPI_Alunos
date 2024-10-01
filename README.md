@@ -18,12 +18,15 @@ Este projeto é uma API CRUD simples para gerenciar informações de alunos. Est
 
     ## Estrutura do Projeto
     -   ├── alunos_api/
-    -   │   ├── venv/                # Ambiente virtual
-    -   │   ├── __init__.py
-    -   │   ├── main.py              # Arquivo principal da API
-    -   │   ├── models.py            # Modelos para o banco de dados
-    -   │   ├── crud.py              # Operações CRUD com o banco de dados
-    -   │   ├── database.py          # Configuração do banco de dados
+        │   ├── app
+    -   │   │  ├── venv/                # Ambiente virtual
+    -   │   │  ├── __init__.py
+    -   │   │  ├── main.py              # Arquivo principal da API
+    -   │   │  │── models.py            # Modelos para o banco de dados
+    -   │   │  ├── crud.py              # Operações CRUD com o banco de dados
+    -   │   │  ├── database.py          # Configuração do banco de dados
+    -   ├── .dockerignore            # Arquivo e pasta do ambiente virtual ignorar
+    -   ├── Dockerfile               # Configuraçao Docker File
     -   └── README.md                # Documentação do projeto
       
 
