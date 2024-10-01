@@ -15,8 +15,8 @@ RUN pip install --upgrade pip && \
 COPY . .
 
 # Exponha a porta que a aplicação irá utilizar
-EXPOSE 8000
+EXPOSE 8080
 
 # Defina o comando para rodar o servidor Uvicorn (FastAPI)
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
 
