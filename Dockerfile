@@ -1,7 +1,8 @@
-# Use a imagem base do Python 3.12
-FROM python:3.12.6
+FROM python:3.12-alpine
 
-# Defina o diretório de trabalho dentro do contêiner
+RUN apk add --no-cache gcc musl-dev postgresql-dev
+
+# Diretório de trabalho dentro do contêiner
 WORKDIR /app
 
 # Copie o arquivo de requisitos para o diretório de trabalho
