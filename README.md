@@ -7,6 +7,7 @@ Este projeto é uma API CRUD para gerenciar informações de alunos. Esta API fo
 - **SQLAlchemy:** ORM para facilitar a interação com o banco de dados.
 - **PostgreSQL:** Banco de dados relacional.
 - **Uvicorn:** Servidor ASGI para execução da aplicação FastAPI.
+- **Docker:** Conteinerização da aplicação para facilitar o deploy.
   
 
     ## Estrutura do Projeto
@@ -21,6 +22,7 @@ Este projeto é uma API CRUD para gerenciar informações de alunos. Esta API fo
     -   │
     -   ├── requirements.txt         # Dependencias   
     -   ├── .dockerignore            # Arquivo e pasta do ambiente virtual ignorar
+    -   ├── Docker-compose           # Arquivo Docker Compose
     -   ├── Dockerfile               # Configuraçao Docker File
     -   └── README.md                # Documentação do projeto
 
@@ -103,21 +105,24 @@ Define o modelo `Aluno`, que representa a tabela `alunos` no banco de dados Post
  ---
 
  ## Banco de Dados
- - O banco de dados utilizado é o PostgreSQL rodando localmente na máquina do desenvolvedor.
- - Host: localhost
+ - O banco de dados utilizado é o PostgreSQL rodando em um contêiner Docker, criado no docker-compose.
+ - Host: db
  - Porta: 5432
- - Nome do Banco: alunos_db
+ - Nome do Banco: universidade
    
  #### Configuração de Conexão: A conexão com o banco de dados foi configurada em database.py, utilizando SQLAlchemy para gerenciar as transações.
-  - SQLALCHEMY_DATABASE_URL = "postgresql://username:password@localhost/alunos_db"
+  - `SQLALCHEMY_DATABASE_URL = "postgresql://admin:12345@db:5432/universidade"`
 
 ## Dockerização
- A aplicação foi empacotada em um container Docker para facilitar o deploy. Abaixo está a configuração do `Dockerfile`.
+ A aplicação foi empacotada em um contêiner Docker para facilitar o deploy. Abaixo está a configuração do `Dockerfile`.
 
 Dockerfile:
 ```
 # Use a imagem base do Python 3.12
-FROM python:3.12.6
+FROM python:3.12-alpine
+
+# Esse comando instala as ferramentas e bibliotecas necessárias para interagir com o PostgreSQL em um contêiner Alpine Linux.
+RUN apk add --no-cache gcc musl-dev postgresql-dev
 
 # Defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
@@ -137,12 +142,58 @@ EXPOSE 8000
 
 # Defina o comando para rodar o servidor Uvicorn (FastAPI)
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+```
+---
 
+## Docker Compose
+```
+version: '3'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: universidade
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
 
+  web:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+
+networks:
+  my_network:
+    driver: bridge
 ```
 
-### Acesse o endereço no navegador:
-- http://localhost:8000
+---
 
-### Acesse a documentação automática do FastAPI:
-- http://localhost:8000/docs
+# Como Rodar a Aplicação
+ ### Usando Docker e Docker Compose:
+ 
+ 1. Clone o repositório ou baixe os arquivos.
+
+ 2. No diretório raiz do projeto: `alunos_api` - Execute os seguinte comando para subir os contêineres:
+
+ - `docker-compose build` Para construir a imagem docker
+ - `docker-compose up` para subir os contêineres
+
+3. Acesse a API em:
+  - URL: http://localhost:8080
+  - Documentação (Swagger): http://localhost:8080/docs
