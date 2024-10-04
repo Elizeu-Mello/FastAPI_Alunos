@@ -32,14 +32,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Instalar Docker
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # Step 2: Instalar Docker e Docker Compose
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io docker-compose
+          sudo systemctl start docker
 
       # Step 3: Build da imagem usando Docker Compose
       - name: Build Docker Image
         run: docker-compose -f docker-compose.yml build
 
-      # Step 5: Limpeza (Opcional)
+      # Step 4: Limpeza 
       - name: Clean up
         run: docker-compose down
