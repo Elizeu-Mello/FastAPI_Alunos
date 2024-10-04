@@ -12,37 +12,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:13
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: 12345
+          POSTGRES_DB: universidade
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       # Step 1: Checkout do código
       - name: Checkout repository
         uses: actions/checkout@v2
 
       # Step 2: Instalar Docker
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # Step 3: Build da imagem
+      # Step 3: Build da imagem usando Docker Compose
       - name: Build Docker Image
-        run: docker build -t elizeu333/project_fastapi:1.0 .
+        run: docker-compose -f docker-compose.yml build
 
-      # Step 4: Logar no Docker Hub
-      - name: Log in to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      # Step 5: Fazer push da imagem
-      - name: Push Docker Image
-        run: docker push elizeu333/project_fastapi:1.0
-
-      # Step 6: (Opcional) Executar testes
-      - name: Run tests
-        run: |
-          docker run --rm elizeu333/project_fastapi:1.0 pytest
-
-      # Step 7: (Opcional) Limpeza
+      # Step 5: Limpeza (Opcional)
       - name: Clean up
-        run: docker rmi elizeu333/project_fastapi:1.0
+        run: docker-compose down
