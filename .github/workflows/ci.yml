@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: build image
-        run: docker build . -t elizeu-mello/fastapi_alunos:${{ github.run_number }}
+        run: docker build . -t elizeu333/projeto_fastapi:${{ github.run_number }}
         
       - name: login 
         run: docker login -u "${{ secrets.DOCKER_USER }}" -p "${{ secrets.DOCKER_TOKEN }}"
