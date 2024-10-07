@@ -5,19 +5,18 @@ on:
     branches:
       - dev
 
-    
 jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout git
+      - name: Checkout Git
         uses: actions/checkout@v4
         
-      - name: build image
+      - name: Build Docker Image
         run: docker build . -t elizeu333/project_fastapi:${{ github.run_number }}
         
-      - name: login 
-        run: docker login -u "${{ secrets.DOCKER_USER }}" -p "${{ secrets.DOCKER_TOKEN }}"
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
-      - name: push dockerhub
+      - name: Push Docker Image to Docker Hub
         run: docker push elizeu333/project_fastapi:${{ github.run_number }}
