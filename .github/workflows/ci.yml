@@ -4,19 +4,19 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout git
+      - name: Checkout Git
         uses: actions/checkout@v4
         
-      - name: build image
-        run: docker build . -t Elizeu-Mello/FastAPI_Alunos:${{ github.run_number }}
+      - name: Build Docker Image
+        run: docker build . -t elizeu333/fastapi_alunos:${{ github.run_number }}
         
-      - name: login 
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
+      - name: Login to Docker Hub
+        run: docker login -u "${{ secrets.DOCKER_USER }}" -p '${{ secrets.DOCKER_TOKEN }}"
 
-      - name: push dockerhub
-        run: docker push Elizeu-Mello/FastAPI_Alunos:${{ github.run_number }}
+      - name: Push Docker Image to Docker Hub
+        run: docker push elizeu333/fastapi_alunos:${{ github.run_number }}
