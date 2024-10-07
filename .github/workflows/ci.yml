@@ -4,55 +4,19 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-
+      
 jobs:
-  build:
+  build-push:
     runs-on: ubuntu-latest
-
-    services:
-      # Nome do serviço de banco de dados
-      db:
-        # Imagem do Docker que será utilizada
-        image: postgres:13
-        # Variáveis de ambiente para configurar o PostgreSQL
-        env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: 12345
-          POSTGRES_DB: universidade
-        # Exposição de portas
-        ports:
-          - "5432:5432"
-        # Opções de saúde para verificar o estado do serviço
-        options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s    
-          --health-timeout 5s    
-          --health-retries 5         
-
     steps:
-      # Step 1: Checkout do código
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: checkout git
+        uses: actions/checkout@v4
+        
+      - name: build image
+        run: docker build . -t Elizeu-Mello/FastAPI_Alunos:${{ github.run_number }}
+        
+      - name: login 
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
 
-      # Step 2: Instalar Docker
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
-          sudo systemctl start docker
-
-      # Step 3: Instalar Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get install -y docker-compose
-
-      # Step 4: Construir e iniciar os contêineres usando Docker Compose
-      - name: Build and run containers
-        run: docker-compose up -d --build  # Constrói e inicia os contêineres em segundo plano
-
-      # Step 5: Limpeza (Opcional)
-      - name: Clean up
-        run: docker-compose down  # Para e remove os contêineres, redes e volumes criados
+      - name: push dockerhub
+        run: docker push Elizeu-Mello/FastAPI_Alunos:${{ github.run_number }}
