@@ -20,3 +20,5 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push elizeu333/fastapi_alunos:${{ github.run_number }}
+
+        
