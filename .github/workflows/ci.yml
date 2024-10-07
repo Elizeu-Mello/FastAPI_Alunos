@@ -19,4 +19,4 @@ jobs:
         run: docker login -u "${{ secrets.DOCKER_USER }}" -p "${{ secrets.DOCKER_TOKEN }}"
 
       - name: push dockerhub
-        run: docker push elizeu-mello/fastapi_alunos:${{ github.run_number }}
+        run: docker push elizeu333/projeto_fastapi:${{ github.run_number }}
