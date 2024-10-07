@@ -8,6 +8,8 @@ Este projeto é uma API CRUD para gerenciar informações de alunos. Esta API fo
 - **PostgreSQL:** Banco de dados relacional.
 - **Uvicorn:** Servidor ASGI para execução da aplicação FastAPI.
 - **Docker:** Conteinerização da aplicação para facilitar o deploy.
+
+- 
   
 
     ## Estrutura do Projeto
