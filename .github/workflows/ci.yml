@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  build-push:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Git
@@ -27,24 +27,17 @@ jobs:
           tags: |
             elizeu333/fastapi_alunos:${{ github.run_number }}
             elizeu333/fastapi_alunos:latest
-            
-      - name: Install Trivy
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.44.0/trivy_0.44.0_Linux-64bit.deb
-          sudo dpkg -i trivy_0.44.0_Linux-64bit.deb
 
-      - name: Scan Docker Image 
-        run: trivy image elizeu333/fastapi_alunos:${{ github.run_number }}
+  scan:
+    runs-on: ubuntu-latest
+    needs: build  
+    steps:
+      - name: Checkout Git
+        uses: actions/checkout@v4
 
-      - name: Push Docker Image to Docker Hub 
-        if: success()
-        uses: docker/build-push-action@v3.2.0
-        with: 
-          context: ./
-          file: ./Dockerfile
-          push: true
-          tags: |
-            elizeu333/fastapi_alunos:${{ github.run_number }}
-            elizeu333/fastapi_alunos:latest
+      - name: Scan Docker Image with Trivy
+        uses: aquasecurity/trivy-action@v0.21.0
+        with:
+          image-ref: elizeu333/fastapi_alunos:${{ github.run_number }}
+          severity: CRITICAL,HIGH  
+          exit-code: 1              # Define o código de saída 1 se vulnerabilidades críticas ou altas forem encontradas
