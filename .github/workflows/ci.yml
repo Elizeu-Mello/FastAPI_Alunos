@@ -23,6 +23,27 @@ jobs:
         with: 
           context: ./
           file: ./Dockerfile
+          push: false
+          tags: |
+            elizeu333/fastapi_alunos:${{ github.run_number }}
+            elizeu333/fastapi_alunos:latest
+            
+      - name: Install Trivy
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y wget
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.44.0/trivy_0.44.0_Linux-64bit.deb
+          sudo dpkg -i trivy_0.44.0_Linux-64bit.deb
+
+      - name: Scan Docker Image 
+        run: trivy image elizeu333/fastapi_alunos:${{ github.run_number }}
+
+      - name: Faz o push somente se o scan Trivy passar sem falhas
+        if: success()
+        uses: docker/build-push-action@v3.2.0
+        with: 
+          context: ./
+          file: ./Dockerfile
           push: true
           tags: |
             elizeu333/fastapi_alunos:${{ github.run_number }}
