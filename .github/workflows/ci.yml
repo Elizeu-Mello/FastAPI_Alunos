@@ -29,7 +29,7 @@ jobs:
             elizeu333/fastapi_alunos:latest
 
       - name: Save Docker Image as Artifact
-        run: docker save elizeu333/fastapi_alunos:${{ github.run_number }} -o image.tar
+        run: docker save elizeu333/fastapi_alunos:${{ github.run_number }} elizeu333/fastapi_alunos:latest -o image.tar
           
       - name: Upload Docker Image Artifact
         uses: actions/upload-artifact@v3
