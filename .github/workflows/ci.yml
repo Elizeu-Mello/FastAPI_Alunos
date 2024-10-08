@@ -38,7 +38,7 @@ jobs:
       - name: Scan Docker Image 
         run: trivy image elizeu333/fastapi_alunos:${{ github.run_number }}
 
-      - name: Faz o push somente se o scan Trivy passar sem falhas
+      - name: Push Docker Image to Docker Hub 
         if: success()
         uses: docker/build-push-action@v3.2.0
         with: 
