@@ -3,8 +3,8 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: ${{ secrets.BD_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.BD_SENHA}}
       POSTGRES_DB: universidade
     ports:
       - "5432:5432"
