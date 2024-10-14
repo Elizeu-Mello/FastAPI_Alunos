@@ -24,9 +24,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ env.DOCKERHUBREPO }}:${{ github.run_number }}
-            ${{ env.DOCKERHUBREPO }}:latest
+          tags: ${{ env.DOCKERHUBREPO }}:${{ github.run_number }},${{ env.DOCKERHUBREPO }}:latest
           
   scan-trivy:
     runs-on: ubuntu-latest
