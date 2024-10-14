@@ -27,7 +27,9 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ env.DOCKERHUBREPO }}:${{ github.run_number }},${{ env.DOCKERHUBREPO }}:latest
+          tags: |
+            elizeu333/fastapi_alunos:${{ github.run_number }}
+            elizeu333/fastapi_alunos:latest
           
   scan-trivy:
     runs-on: ubuntu-latest
@@ -36,6 +38,6 @@ jobs:
       - name: Scan Docker Image with Trivy
         uses: aquasecurity/trivy-action@0.25.0
         with:
-          image-ref: ${{ env.DOCKERHUBREPO }}:${{ github.run_number }}
+          image-ref: elizeu333/fastapi_alunos:${{ github.run_number }}
           severity: CRITICAL,HIGH  
           exit-code: 1
